@@ -9,7 +9,15 @@ module.exports = {
     },
     // darkMode: 'class', // or 'media' or 'class'
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                black: "#0c0f0aff", //text
+                primary: "#ffc457ff", //backgrounds, headers etc
+                white: "#ffffffff", //background
+                green: "#00cc66ff", //success
+                red: "#f45b69ff" //error
+            }
+        },
     },
     variants: {
         extend: {},
