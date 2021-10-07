@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AlkoholTimelineComponent } from './views/alkohol-timeline/alkohol-timeline.component';
 import { AlkoholsListComponent } from './views/alkohols-list/alkohols-list.component';
 import { LoginComponent } from './views/login/login.component';
 import { RecipiesListComponent } from './views/recipies-list/recipies-list.component';
@@ -13,6 +14,9 @@ const routes: Routes = [
   },
   {
     path: "recipies", component: RecipiesListComponent
+  },
+  {
+    path: "beer/:id/timeline", component: AlkoholTimelineComponent
   },
   {
     path: "", redirectTo: "/beer", pathMatch: "full"

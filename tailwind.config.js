@@ -13,6 +13,7 @@ module.exports = {
             colors: {
                 black: "#0c0f0aff", //text
                 primary: "#ffc457ff", //backgrounds, headers etc
+                "primary-dark": "#D68B00",
                 white: "#ffffffff", //background
                 green: "#00cc66ff", //success
                 red: "#f45b69ff" //error
