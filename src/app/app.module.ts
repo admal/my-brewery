@@ -11,6 +11,7 @@ import { RecipeAddEditComponent } from './views/recipe-add-edit/recipe-add-edit.
 import { AlkoholsListComponent } from './views/alkohols-list/alkohols-list.component';
 import { AlkoholAddEditComponent } from './views/alkohol-add-edit/alkohol-add-edit.component';
 import { FooterComponent } from './ui/footer/footer.component';
+import { SlideOverComponent } from './ui/slide-over/slide-over.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { FooterComponent } from './ui/footer/footer.component';
     RecipeAddEditComponent,
     AlkoholsListComponent,
     AlkoholAddEditComponent,
-    FooterComponent
+    FooterComponent,
+    SlideOverComponent
   ],
   imports: [
     BrowserModule,

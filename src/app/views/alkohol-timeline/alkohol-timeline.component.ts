@@ -4,6 +4,7 @@ import { AlcoholsService, AlkoholTimetableViewModel, RecipeStage } from 'src/app
 import { map, switchMap, tap } from "rxjs/operators";
 import { Observable } from 'rxjs';
 import * as dayjs from 'dayjs';
+import { SlideOverDataContent, SlideOverService } from 'src/app/ui/slide-over.service';
 
 class AlcoholTimelineData {
   constructor(data: AlkoholTimetableViewModel) {
@@ -20,7 +21,7 @@ class AlcoholTimelineData {
     let i = 0;
     let groupedStage = new AlcoholGroupedStageByDate(createdDate);
     this.groupedStages.push(groupedStage);
-    
+
     do {
       let stage = data.stages[i];
       let stageDate = createdDate.add(stage.day, "day");
@@ -83,7 +84,8 @@ export class AlkoholTimelineComponent implements OnInit {
 
   constructor(
     private alcoholsService: AlcoholsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private slideOverService: SlideOverService
   ) {
     this.now = new Date(); //TODO: get from server
   }
@@ -116,8 +118,19 @@ export class AlkoholTimelineComponent implements OnInit {
       );
   }
 
-  openDetails(stage: RecipeStage) {
-    console.log("stage", stage);//TODO: open modal
+  openDetails(name: string, groupedStage: AlcoholGroupedStageByDate) {
+    console.log("stage", name);//TODO: open modal
+    let contents = groupedStage.stages.map(x => {
+      return {
+        header: x.name,
+        content: x.description
+      } as SlideOverDataContent
+    });
+
+    this.slideOverService.popSlideOver({
+      title: name,
+      contents: contents
+    });
   }
 
   toggleDoneGroupedStage(groupedStage: AlcoholGroupedStageByDate) {
