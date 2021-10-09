@@ -1,1 +1,26 @@
-<p>sidebar works!</p>
+
+<div class="relative bg-primary dark:bg-gray-800  rounded-lg">
+    <div class="flex-shrink flex-col sm:flex-row sm:justify-around">
+        <div class="w-72 h-screen">
+            <span class="mx-4 text-3xl font-bold p-6">
+                My Brewery
+            </span>
+            <nav class="mt-10 px-6 ">
+                <a class="hover:bg-primary-dark flex items-center p-2 my-6 rounded-lg" routerLink="/beer" routerLinkActive="active">
+                    <span class="mx-4 text-lg font-normal">
+                        My alcohols
+                    </span>
+                    <span class="flex-grow text-right">
+                    </span>
+                </a>
+                <a class="hover:bg-primary-dark flex items-center p-2 my-6 rounded-lg" routerLink="/recipies" routerLinkActive="active">
+                    <span class="mx-4 text-lg font-normal">
+                        My recipies
+                    </span>
+                    <span class="flex-grow text-right">
+                    </span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</div>
