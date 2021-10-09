@@ -1,1 +1,76 @@
-<p>recipe-add-edit works!</p>
+<div class="w-full">
+    <form class="max-w-md mx-auto" [formGroup]="recipeForm">
+        <h2 class="text-2xl font-bold" *ngIf="isNew">Add new recipe</h2>
+        <h2 class="text-2xl font-bold" *ngIf="isNew == false">Edit recipe</h2>
+        <div class="grid grid-cols-1 gap-3">
+            <label class="block">
+                <span class="text-gray-700">Name*</span>
+                <input type="text" formControlName="name"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    placeholder="">
+            </label>
+            <label class="block">
+                <span class="text-gray-700">Litres of beer*</span>
+                <input type="number" formControlName="litres"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    placeholder="">
+            </label>
+
+            <div formArrayName="ingredients">
+                <div class="flex justify-between">
+                    <h2 class="text-xl font-bold">Ingredients*</h2>
+                    <button (click)="addIngredient()" class="text-sm bg-primary text-white py-2 px-4">+Add
+                        ingredient</button>
+                </div>
+                <label class="block" *ngFor="let ingredient of ingredients.controls; let i=index"
+                    for="ingredient-{{i}}">
+                    <!-- <span class="text-gray-700">Description</span> -->
+                    <div class="flex items-center">
+                        <input type="text" id="ingredient-{{i}}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            placeholder="Ingredient name, quantity and unit*" [formControlName]="i">
+                        <button (click)="removeIngredient(i)"
+                            class="mt-1 ml-1 text-white bg-red py-2 px-3 rounded">-</button>
+                    </div>
+                </label>
+            </div>
+            <div formArrayName="stages" class="mt-4">
+                <div class="flex justify-between">
+                    <h2 class="text-xl font-bold">Recipe stages*</h2>
+                    <button class="text-sm bg-primary text-white py-2 px-4" (click)="addStage()">+Add stage</button>
+                </div>
+                <p class="mb-4 text-gray-400">
+                    Define each stage needed to prepare a new beer. Stages can be in the same day or later. (TODO:
+                    prepare better description)
+                </p>
+                <label class="block" *ngFor="let stage of stages.controls; let i=index" for="stage-{{i}}">
+                    <!-- <span class="text-gray-700">Description</span> -->
+                    <div [formGroupName]="i" class="flex items-center">
+                        <p class="mr-1">+</p>
+                        <input type="text" id="stage-days-{{i}}"
+                            class="mt-1 mr-1 w-16 block rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            formControlName="days">
+                        <p class="mr-4">days</p>
+                        <input type="text" id="stage-name-{{i}}"
+                            class="mt-1 block w-3/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            placeholder="Stage name*" formControlName="name">
+
+                        <button (click)="removeStage(i)"
+                            class="mt-1 ml-1 text-white bg-red py-2 px-3 rounded">-</button>
+                    </div>
+                </label>
+            </div>
+            <button 
+                class="mt-4 text-lg font-bold  text-white py-2 px-4" 
+                (click)="save()"
+                [ngClass]="{'bg-gray-800': saving, 'bg-primary': !saving}"
+                [disabled]="saving">Save recipe</button>
+        </div>
+    </form>
+    
+    <div *ngIf="saveResult$ | async as saveResult">
+        <div *ngIf="!saveResult.success && !saving" class="text-lg text-red text-center font-bold max-w-md mx-auto">
+            The recipe could not have been saved. There was an error. Please try again.
+        </div>
+    </div>    
+</div>

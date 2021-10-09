@@ -65,13 +65,6 @@ class AlcoholGroupedStageByDate {
   stages: RecipeStage[];
 }
 
-// class AlcoholStage {
-//   day: number;
-//   name: string;
-//   description: string;
-//   done: boolean;
-// }
-
 @Component({
   selector: 'mb-alkohol-timeline',
   templateUrl: './alkohol-timeline.component.html',

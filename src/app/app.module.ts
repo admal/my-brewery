@@ -12,6 +12,7 @@ import { AlkoholsListComponent } from './views/alkohols-list/alkohols-list.compo
 import { AlkoholAddEditComponent } from './views/alkohol-add-edit/alkohol-add-edit.component';
 import { FooterComponent } from './ui/footer/footer.component';
 import { SlideOverComponent } from './ui/slide-over/slide-over.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SlideOverComponent } from './ui/slide-over/slide-over.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
