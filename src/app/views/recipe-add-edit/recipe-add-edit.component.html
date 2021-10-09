@@ -1,5 +1,5 @@
 <div class="w-full">
-    <form class="py-12 max-w-md mx-auto" [formGroup]="recipeForm">
+    <form class="max-w-md mx-auto" [formGroup]="recipeForm">
         <h2 class="text-2xl font-bold" *ngIf="isNew">Add new recipe</h2>
         <h2 class="text-2xl font-bold" *ngIf="isNew == false">Edit recipe</h2>
         <div class="grid grid-cols-1 gap-3">
@@ -60,16 +60,17 @@
                     </div>
                 </label>
             </div>
-            <button class="mt-4 text-lg font-bold bg-primary text-white py-2 px-4" (click)="save()">Save recipe</button>
+            <button 
+                class="mt-4 text-lg font-bold  text-white py-2 px-4" 
+                (click)="save()"
+                [ngClass]="{'bg-gray-800': saving, 'bg-primary': !saving}"
+                [disabled]="saving">Save recipe</button>
         </div>
     </form>
-
-    <div>
-        {{recipeForm.value | json}}
-    </div>
-    <div>
-        ISVALID: {{recipeForm.valid | json}}</div>
+    
     <div *ngIf="saveResult$ | async as saveResult">
-        SAVED
-    </div>
+        <div *ngIf="!saveResult.success && !saving" class="text-lg text-red text-center font-bold max-w-md mx-auto">
+            The recipe could not have been saved. There was an error. Please try again.
+        </div>
+    </div>    
 </div>

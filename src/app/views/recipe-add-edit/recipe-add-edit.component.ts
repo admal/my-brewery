@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { RecipeAddEditModel, RecipiesService } from 'src/app/services/recipies/recipies.service';
+import { delay, filter, map, switchMap, tap } from 'rxjs/operators';
+import { RecipeAddEditModel, RecipeSaveResult, RecipiesService } from 'src/app/services/recipies/recipies.service';
 
 @Component({
   selector: 'mb-recipe-add-edit',
@@ -13,8 +13,10 @@ import { RecipeAddEditModel, RecipiesService } from 'src/app/services/recipies/r
 export class RecipeAddEditComponent implements OnInit, OnDestroy {
   recipeForm: FormGroup;
   saveClick$ = new Subject<void>();
-  saveResult$: Observable<boolean>;
+  saveResult$: Observable<RecipeSaveResult>;
   setFormValueSubscription: Subscription;
+
+  saving = false; //TODO: make more reactive
 
   constructor(
     private fb: FormBuilder,
@@ -48,7 +50,9 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
       tap(_ => console.log("valid", this.recipeForm.valid)),
       filter(x => this.recipeForm.valid),
       map(_ => this.recipeForm.value as RecipeAddEditModel),
-      switchMap(x => this.recipiesService.save(x))
+      tap(_ => this.saving = true),
+      switchMap(x => this.recipiesService.save(x)),
+      tap(_ => this.saving = false)
     );
 
     this.setFormValueSubscription =
@@ -58,6 +62,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
           map(params => params["id"] as number),
           switchMap(id => this.recipiesService.getAddEditModel(id)),
           tap(x => {
+            this.recipeForm.get("id").setValue(x.id);
             this.recipeForm.get("name").setValue(x.name);
             this.recipeForm.get("litres").setValue(x.litres);
 
@@ -73,7 +78,6 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
                 days: [stage.days]
               }));
             }
-            // this.stages.patchValue(x.stages);
           })
         )
         .subscribe();

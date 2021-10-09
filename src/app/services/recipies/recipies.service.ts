@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { from, observable, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { SupabaseService } from '../supabase/supabase.service';
 
 
 export interface RecipeAddEditModel {
@@ -15,44 +18,41 @@ export interface RecipeStage {
   days: number;
 }
 
+export interface RecipeSaveResult {
+  success: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class RecipiesService {
 
-  constructor() { }
+  constructor(private supabase: SupabaseService) { }
 
-  save(model: RecipeAddEditModel): Observable<boolean> {
+  async save(model: RecipeAddEditModel): Promise<RecipeSaveResult> {
     console.log("model", model);
-    return of(true);
+    if (model.id > 0) {
+      const { error } = await this.supabase.getClient().from("recipe").update(model).match({ id: model.id });
+      return {
+        success: error == null
+      };
+    } else {
+      delete model.id;
+      const { error } = await this.supabase.getClient().from("recipe").insert(model);
+      return {
+        success: error == null
+      };
+    }
   }
 
-  getAddEditModel(id: number): Observable<RecipeAddEditModel> {
-    // if(id != undefined) {
-      let ret = {
-        id: id,
-        ingredients: [
-          "dupa ingredient",
-          "asd",
-          "Adssdada"
-        ],
-        litres: 10,
-        name: "Beer",
-        stages: [
-          {
-            days: 10,
-            name: "Dupa"
-          }
-        ]
-      } as RecipeAddEditModel;
-  
-      return of(ret);
-    // }
+  async getAddEditModel(id: number): Promise<RecipeAddEditModel> {
+    console.log("id", id);
 
-    // let ret = {
-
-    // } as RecipeAddEditModel;
-
-    // return of(ret);
+    const { data, error } = await this.supabase.getClient().from<RecipeAddEditModel>("recipe").select().match({ id: id }).single();
+    if (error) {
+      throw error;
+    }
+    
+    return data;
   }
 }
