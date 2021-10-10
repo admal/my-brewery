@@ -25,6 +25,14 @@ export class AlkoholTimelineComponent implements OnInit {
   ) {
   }
 
+  //tmp
+  private _clamp(x: number): number {
+    if (x < 0) {
+      return 0;
+    }
+    return x;
+  }
+
   ngOnInit(): void {
     this.alcohol$ =
       this.alcoholRefresh$
@@ -44,7 +52,9 @@ export class AlkoholTimelineComponent implements OnInit {
               return;
             }
 
-            
+            let allStagesCount = data.recipe.stages.length;
+            let percentage = this._clamp(currentStage-1)/allStagesCount * 100 + 5;
+            this.nowLinePosition = `${percentage}%`;
           }),
           map(data => {
             let stages: RecipeStage[] = [];
@@ -117,7 +127,7 @@ export class AlkoholTimelineComponent implements OnInit {
     // }
     if (groupedStage.done) {
       this.alcoholsService
-        .markStageDone(alcoholId, groupedStage.lastStageIndex - 1)
+        .markStageDone(alcoholId, groupedStage.lastStageIndex - groupedStage.stages.length)
         .then(_ => this.alcoholRefresh$.next());
     } else {
       this.alcoholsService
