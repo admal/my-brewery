@@ -25,12 +25,21 @@ export class AlkoholsListComponent implements OnInit {
     private alcoholService: AlcoholsService
   ) { }
 
+  //tmp
+  private _clamp(x: number): number {
+    if (x < 0) {
+      return 0;
+    }
+    return x;
+  }
+
   ngOnInit(): void {
     this.alcohols$ = from(this.alcoholService.getAll())
       .pipe(
         map(data => {
           let alcohols = data.map(x => {
-            let currentStage = x.recipe.stages[x.currentStageIndex];
+
+            let currentStage = x.recipe.stages[this._clamp(x.currentStageIndex)];
             let nextStage = x.currentStageIndex + 1 < x.recipe.stages.length ? x.recipe.stages[x.currentStageIndex + 1] : null;
 
             let currentStageFullDays = 0;
