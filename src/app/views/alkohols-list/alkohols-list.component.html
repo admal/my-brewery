@@ -58,6 +58,9 @@
                     <span>Next stage: </span> <span class="text-primary-dark">{{alcohol.nextStageName}} </span><span>in
                       {{alcohol.nextStageInDays}} days</span>
                   </div>
+                  <div class="text-gray-400" *ngIf="alcohol.nextStageName == null">
+                    <span class="text-primary-dark">Finished</span>
+                  </div>
 
                 </td>
                 <td class="whitespace-nowrap">

@@ -34,12 +34,12 @@ export class AlkoholsListComponent implements OnInit {
             let nextStage = x.currentStageIndex + 1 < x.recipe.stages.length ? x.recipe.stages[x.currentStageIndex + 1] : null;
 
             let currentStageFullDays = 0;
-            for (const stage of x.recipe.stages) {
-              currentStageFullDays += stage.days;
+            for (let i = 0; i <= x.currentStageIndex; i++) {
+              currentStageFullDays += x.recipe.stages[i].days;
             }
-            let currentStageDate = dayjs(x.createdAt).add(currentStageFullDays, "day");
 
-            let nextStageDate = currentStageDate.add(nextStage.days);
+            let currentStageDate = dayjs(x.createdAt).add(currentStageFullDays, "day");
+            let nextStageDate = currentStageDate.add(nextStage?.days);
             let nextStageInDays = nextStageDate.diff(new Date(), "days");
 
             return {
