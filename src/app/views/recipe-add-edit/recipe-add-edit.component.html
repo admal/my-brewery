@@ -44,8 +44,7 @@
                     <button class="text-sm bg-primary text-white py-2 px-4" (click)="addStage()">+Add stage</button>
                 </div>
                 <p class="mb-4 text-gray-400">
-                    Define each stage needed to prepare a new beer. Stages can be in the same day or later. (TODO:
-                    prepare better description)
+                    Define each stage needed to prepare a new beer. Stages can be in the same day or later.
                 </p>
                 <label class="block" *ngFor="let stage of stages.controls; let i=index" for="stage-{{i}}">
                     <!-- <span class="text-gray-700">Description</span> -->
