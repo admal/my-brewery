@@ -136,4 +136,40 @@ export class AlcoholsService {
     }
   }
 
+  async getAll(): Promise<AlcoholData[]> {
+    const { data, error } = await this.supabase.getClient()
+      .from<AlcoholData>("alcohol")
+      .select(`
+        id,
+        litres,
+        createdAt,
+        currentStageIndex,
+        recipe:recipe (
+          name,
+          stages
+        )
+    `);
+    console.log("data", data);
+
+    return data;
+  }
+
+}
+
+export interface AlcoholData {
+  id: number;
+  createdAt: Date;
+  litres: number;
+  currentStageIndex: number;
+  recipe: AlcoholRecipeData;
+}
+
+export interface AlcoholRecipeData {
+  name: string;
+  stages: AlcoholRecipeStageData[];
+}
+
+export interface AlcoholRecipeStageData {
+  name: string;
+  days: number;
 }

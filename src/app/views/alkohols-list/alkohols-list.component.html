@@ -1,1 +1,72 @@
-<p>alkohols-list works!</p>
+<!-- This example requires Tailwind CSS v2.0+ -->
+<div class="max-w-5xl mx-auto">
+  <mb-header>
+    <h1 class="text-2xl text-white font-bold">
+      My beers
+    </h1>
+  </mb-header>
+  <div class="mb-4"></div>
+  <div class="flex flex-col">
+    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-primary">
+              <tr>
+                <!-- <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Type
+                </th> -->
+                <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Name
+                </th>
+                <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Litres
+                </th>
+                <th scope="col" class="px-2 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Stage
+                </th>
+                <th scope="col" class="relative px-6 py-3">
+                  <span class="sr-only">Edit</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" *ngIf="alcohols$ | async as alcohols">
+              <tr *ngFor="let alcohol of alcohols">
+                <!-- <td></td> -->
+                <td class="px-2 py-4 whitespace-nowrap text-lg font-bold">
+                  {{alcohol.recipeName}}
+                </td>
+                <td class="px-2 py-4 whitespace-nowrap text-sm">
+                  {{alcohol.litres}} litres
+                </td>
+                <!-- TODO: make a pipe -->
+                <td class="px-2 py-4 whitespace-nowrap text-sm">
+                  <!-- <span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    Active
+                  </span> -->
+                  <div class="font-bold text-primary text-lg">{{alcohol.currentStageName}}</div>
+                  <div class="text-gray-400" *ngIf="alcohol.nextStageName != null">
+                    <span>Next stage: </span> <span class="text-primary-dark">{{alcohol.nextStageName}} </span><span>in
+                      {{alcohol.nextStageInDays}} days</span>
+                  </div>
+
+                </td>
+                <td class="whitespace-nowrap">
+                  <!-- px-2 py-4 -->
+                  <div class="h-full text-sm font-medium flex items-center justify-end">
+                    <a [routerLink]="['/beer/1/edit']" class="text-primary hover:text-primary-dark mr-2">Edit</a>
+                    <mb-primary-right-arrow-button [routerLink]="['/beer/1/timeline']"></mb-primary-right-arrow-button>
+                    <div class="mr-2"></div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- More people... -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

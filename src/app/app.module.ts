@@ -13,6 +13,9 @@ import { AlkoholAddEditComponent } from './views/alkohol-add-edit/alkohol-add-ed
 import { FooterComponent } from './ui/footer/footer.component';
 import { SlideOverComponent } from './ui/slide-over/slide-over.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PrimaryLeftArrowButtonComponent } from './ui/primary-left-arrow-button/primary-left-arrow-button.component';
+import { PrimaryRightArrowButtonComponent } from './ui/primary-right-arrow-button/primary-right-arrow-button.component';
+import { HeaderComponent } from './ui/header/header.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     AlkoholsListComponent,
     AlkoholAddEditComponent,
     FooterComponent,
-    SlideOverComponent
+    SlideOverComponent,
+    PrimaryLeftArrowButtonComponent,
+    PrimaryRightArrowButtonComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
