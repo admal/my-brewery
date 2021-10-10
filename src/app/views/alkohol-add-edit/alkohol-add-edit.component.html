@@ -1,8 +1,12 @@
 <!-- TODO: move inputs into components -->
 <div class="w-full">
     <form class="max-w-md mx-auto" [formGroup]="alcoholForm">
-        <h2 class="text-2xl font-bold" *ngIf="isNew">Add new beer</h2>
-        <h2 class="text-2xl font-bold" *ngIf="isNew == false">Edit beer</h2>
+        <mb-header>
+            <mb-primary-left-arrow-button [routerLink]="['/alcohols']" ></mb-primary-left-arrow-button>
+            <div class="mr-2"></div>
+            <div class="text-2xl font-bold" *ngIf="isNew">Add new beer</div>
+            <div class="text-2xl font-bold" *ngIf="isNew == false">Edit beer</div>
+        </mb-header>
         <div class="grid grid-cols-1 gap-3" *ngIf="recipies$ | async as recipies">
             <label class="block">
                 <span class="text-gray-700">Select recipe</span>
