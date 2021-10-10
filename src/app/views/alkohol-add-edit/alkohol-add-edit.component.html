@@ -1,1 +1,36 @@
-<p>alkohol-add-edit works!</p>
+<!-- TODO: move inputs into components -->
+<div class="w-full">
+    <form class="max-w-md mx-auto" [formGroup]="alcoholForm">
+        <h2 class="text-2xl font-bold" *ngIf="isNew">Add new beer</h2>
+        <h2 class="text-2xl font-bold" *ngIf="isNew == false">Edit beer</h2>
+        <div class="grid grid-cols-1 gap-3" *ngIf="recipies$ | async as recipies">
+            <label class="block">
+                <span class="text-gray-700">Select recipe</span>
+                <select
+                    class="block w-full mt-1 rounded-md border-gray shadow-sm focus:border-indigo focus:ring focus:ring-primary focus:ring-opacity-50"
+                    formControlName="recipeId">
+                    <option 
+                        *ngFor="let recipe of recipies"
+                        [value]="recipe.id">
+                        {{recipe.name}}
+                    </option>
+                </select>
+            </label>
+            <label class="block">
+                <span class="text-gray-700">Litres of beer*</span>
+                <input type="number" formControlName="litres"
+                    class="mt-1 block w-full rounded-md border-gray shadow-sm focus:border-indigo focus:ring focus:ring-primary focus:ring-opacity-50"
+                    placeholder="">
+            </label>
+
+            <button class="mt-4 text-lg font-bold  text-white py-2 px-4" (click)="save()"
+                [ngClass]="{'bg-gray-800': saving, 'bg-primary': !saving}" [disabled]="saving">Save beer</button>
+        </div>
+    </form>
+
+    <div *ngIf="saveResult$ | async as saveResult">
+        <div *ngIf="!saveResult.success && !saving" class="text-lg text-red text-center font-bold max-w-md mx-auto">
+            The beer could not have been saved. There was an error. Please try again.
+        </div>
+    </div>
+</div>

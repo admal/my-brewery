@@ -22,6 +22,11 @@ export interface RecipeSaveResult {
   success: boolean;
 }
 
+export interface RecipieSimpleModel {
+  id: number;
+  name: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,6 +36,8 @@ export class RecipiesService {
 
   async save(model: RecipeAddEditModel): Promise<RecipeSaveResult> {
     console.log("model", model);
+
+    //TODO: refactor that
     if (model.id > 0) {
       const { error } = await this.supabase.getClient().from("recipe").update(model).match({ id: model.id });
       return {
@@ -53,6 +60,21 @@ export class RecipiesService {
       throw error;
     }
     
+    return data;
+  }
+
+  async getSimple(): Promise<RecipieSimpleModel[]> {
+    const {data, error} = await this.supabase
+      .getClient()
+      .from<RecipieSimpleModel>("recipe")
+      .select(`
+        id,
+        name
+      `);
+    if (error) {
+      throw error;
+    }
+
     return data;
   }
 }
