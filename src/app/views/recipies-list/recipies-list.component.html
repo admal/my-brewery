@@ -2,7 +2,14 @@
 <div class="max-w-5xl mx-auto">
   <mb-header>
     <h1 class="text-2xl text-white font-bold">My recipes</h1>
+    <div class="flex-grow"></div>
+    <button
+    class="border border-white font-bold text-lg flex items-center justify-center text-white bg-primary rounded px-2 py-1 hover:bg-primary-dark"
+    [routerLink]="['/recipe/add']">
+    New recipe
+  </button>
   </mb-header>
+
   <div class="mb-4"></div>
   <div class="flex flex-col">
     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

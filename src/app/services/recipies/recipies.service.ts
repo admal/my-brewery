@@ -77,4 +77,12 @@ export class RecipiesService {
 
     return data;
   }
+
+  async getAll(): Promise<RecipeAddEditModel[]> {
+    const { data, error } = await this.supabase.getClient()
+    .from<RecipeAddEditModel>("recipe");
+    console.log("data", data)
+
+    return data;
+  }
 }
