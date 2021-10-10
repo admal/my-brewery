@@ -12,6 +12,7 @@ export interface AlcoholData {
 }
 
 export interface AlcoholRecipeData {
+  id: number;
   name: string;
   stages: AlcoholRecipeStageData[];
 }
@@ -99,7 +100,7 @@ export class AlcoholsService {
       delete model.id;
       let saveModel = {
         ...model,
-        currentStageIndex: 0
+        currentStageIndex: -1
       } as AlcoholDbModel;
 
       const { error } = await this.supabase.getClient().from("alcohol").insert(saveModel);
@@ -118,6 +119,7 @@ export class AlcoholsService {
         createdAt,
         currentStageIndex,
         recipe:recipe (
+          id,
           name,
           stages
         )

@@ -6,6 +6,7 @@ import { AlcoholsService } from 'src/app/services/alcohols/alcohols.service';
 
 export interface AlcoholListModel {
   id: number;
+  recipeId: number;
   recipeName: string;
   litres: number;
   currentStageName: string;
@@ -45,6 +46,7 @@ export class AlkoholsListComponent implements OnInit {
               id: x.id,
               litres: x.litres,
               recipeName: x.recipe.name,
+              recipeId: x.recipe.id,
               currentStageName: currentStage.name,
               nextStageName: nextStage != null ? nextStage.name : null,
               nextStageInDays: nextStage != null ? nextStageInDays : 0
