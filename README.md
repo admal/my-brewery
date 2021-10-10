@@ -1,27 +1,24 @@
-# MyBreweryFrontend
+# My Brewery
+My Brewery allows to manage and remember about your beer production. At any moment you are able to create new stunning recipies and save them in the app. You are always able to check how big your current collection is and you can see at what stage each production is.
+## Features
+### See your shelf whereever you are!
+In My Brewery user is able to start new breweries and 
+[SCREEN-alcohols]
+### Never forget about any phase of your beer production
+Beer production is a subtle process that requires patience and accuraccy. Thanks to My Brewery you will never forget any important term and you will be always on time. My Brewery allows easily to see when the next step is.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.14.
+[SCREEN-timeline]
 
-## Development server
+### Save your best recipies
+Are you done with keeping Word documents or with loosing your printed papers with recipies? We are! That is why in My Brewery you are able to create and update each your recipy from your browser.
+[SCREEN-recipies]
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Technology
+The app was developed using Angular and Supabase (supabase database). In the future Supabase will be the chosen technology for API with storage and authentication.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Planned features
+* accounts - authorisation and authentication
+* more alcohol types - beer was chosen to be the main theme of the application because that is the theme of Hacktoberfest but primarly we are making wines and spirits and we want to use My Brewery for all of our productions
+* notifications - calendar, email, sms notifications to notify whether you need to take action
+* better recipies - more complex ingredients and recipy stages
+* 
