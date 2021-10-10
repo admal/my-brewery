@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import localeUk from '@angular/common/locales/en-GB';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,6 +20,8 @@ import { PrimaryLeftArrowButtonComponent } from './ui/primary-left-arrow-button/
 import { PrimaryRightArrowButtonComponent } from './ui/primary-right-arrow-button/primary-right-arrow-button.component';
 import { HeaderComponent } from './ui/header/header.component';
 
+//TODO: proper locale detecting
+registerLocaleData(localeUk);
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +43,9 @@ import { HeaderComponent } from './ui/header/header.component';
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'en-GB' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

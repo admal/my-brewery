@@ -1,69 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterContentInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AlcoholsService, AlkoholTimetableViewModel, RecipeStage } from 'src/app/services/alcohols/alcohols.service';
+import { AlcoholsService } from 'src/app/services/alcohols/alcohols.service';
 import { map, switchMap, tap } from "rxjs/operators";
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import * as dayjs from 'dayjs';
 import { SlideOverDataContent, SlideOverService } from 'src/app/ui/slide-over.service';
-
-class AlcoholTimelineData {
-  constructor(data: AlkoholTimetableViewModel) {
-    this.id = data.id;
-    this.recipeName = data.recipeName;
-
-    let createdDate = dayjs(data.createdDate);
-    this._createdDate = createdDate;
-
-    this.groupedStages = [];
-
-    let lastGroupedStageDate = this._createdDate;
-
-    let i = 0;
-    let groupedStage = new AlcoholGroupedStageByDate(createdDate);
-    this.groupedStages.push(groupedStage);
-
-    do {
-      let stage = data.stages[i];
-      let stageDate = createdDate.add(stage.day, "day");
-
-      if (stageDate.isSame(lastGroupedStageDate, "day") == false) {
-        groupedStage = new AlcoholGroupedStageByDate(stageDate);
-        lastGroupedStageDate = stageDate;
-        this.groupedStages.push(groupedStage);
-      }
-
-      groupedStage.done = groupedStage.done && stage.done;
-      groupedStage.stages.push(stage);
-      i++;
-    } while (i < data.stages.length);
-  }
-
-  id: number;
-  recipeName: string;
-
-  private _createdDate: dayjs.Dayjs;
-
-  get createdDate(): Date {
-    return this._createdDate.toDate();
-  }
-
-  groupedStages: AlcoholGroupedStageByDate[];
-}
-
-class AlcoholGroupedStageByDate {
-  constructor(stageDate: dayjs.Dayjs) {
-    this._date = stageDate;
-    this.stages = [];
-  }
-
-  private _date: dayjs.Dayjs;
-  get date(): Date {
-    return this._date.toDate();
-  }
-
-  done: boolean = true;
-  stages: RecipeStage[];
-}
+import { AlcoholGroupedStageByDate, AlcoholTimelineData, AlkoholTimetableViewModel, RecipeStage } from './models';
 
 @Component({
   selector: 'mb-alkohol-timeline',
@@ -71,6 +13,7 @@ class AlcoholGroupedStageByDate {
   styleUrls: ['./alkohol-timeline.component.scss']
 })
 export class AlkoholTimelineComponent implements OnInit {
+  alcoholRefresh$ = new Subject<void>();
   alcohol$: Observable<AlcoholTimelineData>;
   nowLinePosition: string = "50%";
   now: Date;
@@ -80,39 +23,80 @@ export class AlkoholTimelineComponent implements OnInit {
     private route: ActivatedRoute,
     private slideOverService: SlideOverService
   ) {
-    this.now = new Date(); //TODO: get from server
   }
 
   ngOnInit(): void {
-    this.alcohol$ = this.route.params
-      .pipe(
-        map(params => params["id"] as number),
-        switchMap(alcoholId => {
-          return this.alcoholsService.get(alcoholId)
-        }),
-        tap(x => {
-          let nowParsed = dayjs(this.now);
-          let lastDate = dayjs(x.stages[x.stages.length - 1].date);
-          let createdDate = dayjs(x.createdDate);
+    this.alcohol$ =
+      this.alcoholRefresh$
+        .pipe(
+          tap(_ => this.now = new Date()),
+          switchMap(_ => this.route.params),
+          map(params => params["id"] as number),
+          switchMap(alcoholId => {
+            return this.alcoholsService.get(alcoholId)
+          }),
+          tap(data => {
+            let currentStage = data.currentStageIndex;
+            let nextStage = data.currentStageIndex + 1;
 
-          console.log("nowParsed", nowParsed.toISOString());
-          console.log("lastDate", lastDate.toISOString());
-          console.log("createdDate", createdDate.toISOString());
+            if (nextStage >= data.recipe.stages.length) {
+              this.nowLinePosition = "100%";
+              return;
+            }
 
-          let durationInDays = lastDate.diff(createdDate, "days");
-          let nowFromStartDiff = nowParsed.diff(createdDate, "days");
+            
+          }),
+          map(data => {
+            let stages: RecipeStage[] = [];
 
-          console.log("durationInDays", durationInDays);
-          console.log("nowFromStartDiff", nowFromStartDiff);
+            stages = data.recipe.stages.map((stage, idx) => {
+              let stageDay = 0;
+              for (let i = 0; i < idx; i++) {
+                stageDay += data.recipe.stages[i].days;
+              }
 
-          // this.nowLinePosition = `${nowFromStartDiff / durationInDays * 100}%`;//TODO: fix
-        }),
-        map(x => new AlcoholTimelineData(x))
-      );
+              return {
+                date: dayjs(data.createdAt).add(stage.days, "day").toDate(),
+                day: stageDay,
+                name: stage.name,
+                done: idx <= data.currentStageIndex,
+                description: "TODO"
+              }
+            });
+
+            let alcohol = {
+              id: data.id,
+              createdDate: data.createdAt,
+              recipeName: data.recipe.name,
+              stages: stages
+            } as AlkoholTimetableViewModel;
+
+            return alcohol;
+          }),
+          tap(x => {
+            let nowParsed = dayjs(this.now);
+            let lastDate = dayjs(x.stages[x.stages.length - 1].date);
+            let createdDate = dayjs(x.createdDate);
+
+            console.log("nowParsed", nowParsed.toISOString());
+            console.log("lastDate", lastDate.toISOString());
+            console.log("createdDate", createdDate.toISOString());
+
+            let durationInDays = lastDate.diff(createdDate, "days");
+            let nowFromStartDiff = nowParsed.diff(createdDate, "days");
+
+            console.log("durationInDays", durationInDays);
+            console.log("nowFromStartDiff", nowFromStartDiff);
+
+            // this.nowLinePosition = `${nowFromStartDiff / durationInDays * 100}%`;//TODO: fix
+          }),
+          map(x => new AlcoholTimelineData(x))
+        );
+
+    setTimeout(_ => this.alcoholRefresh$.next()); //TEMPORARY HACK, TODO: MAKE IT PROPERLY
   }
 
   openDetails(name: string, groupedStage: AlcoholGroupedStageByDate) {
-    console.log("stage", name);//TODO: open modal
     let contents = groupedStage.stages.map(x => {
       return {
         header: x.name,
@@ -126,10 +110,19 @@ export class AlkoholTimelineComponent implements OnInit {
     });
   }
 
-  toggleDoneGroupedStage(groupedStage: AlcoholGroupedStageByDate) {
-    groupedStage.done = !groupedStage.done;
-    for (const stage of groupedStage.stages) {
-      stage.done = groupedStage.done;
+  toggleDoneGroupedStage(alcoholId: number, groupedStage: AlcoholGroupedStageByDate) {
+    // groupedStage.done = !groupedStage.done;
+    // for (const stage of groupedStage.stages) {
+    //   stage.done = groupedStage.done;
+    // }
+    if (groupedStage.done) {
+      this.alcoholsService
+        .markStageDone(alcoholId, groupedStage.lastStageIndex - 1)
+        .then(_ => this.alcoholRefresh$.next());
+    } else {
+      this.alcoholsService
+        .markStageDone(alcoholId, groupedStage.lastStageIndex)
+        .then(_ => this.alcoholRefresh$.next());
     }
   }
 }
