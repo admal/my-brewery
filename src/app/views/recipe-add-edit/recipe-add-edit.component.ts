@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { delay, filter, map, switchMap, tap } from 'rxjs/operators';
 import { RecipeAddEditModel, RecipeSaveResult, RecipiesService } from 'src/app/services/recipies/recipies.service';
@@ -21,6 +21,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private recipiesService: RecipiesService,
+    private router: Router,
     private route: ActivatedRoute
   ) {
 
@@ -52,7 +53,8 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
       map(_ => this.recipeForm.value as RecipeAddEditModel),
       tap(_ => this.saving = true),
       switchMap(x => this.recipiesService.save(x)),
-      tap(_ => this.saving = false)
+      tap(_ => this.saving = false),
+      tap(_ => this.router.navigate(["/recipies"]))
     );
 
     this.setFormValueSubscription =
@@ -112,6 +114,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    //TODO: refactor
     if (this.recipeForm.invalid) {
       alert("Please fill all required fields.")
     }

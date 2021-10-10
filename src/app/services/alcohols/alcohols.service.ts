@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { SupabaseService } from '../supabase/supabase.service';
 
 export interface AlkoholTimetableViewModel {
   id: number;
@@ -16,15 +17,38 @@ export interface RecipeStage {
   done: boolean;
 }
 
+export interface AlcoholAddEditModel {
+  id: number;
+  recipeId: number;
+  litres: number;
+}
+
+interface AlcoholDbModel {
+  id: number;
+  recipeId: number;
+  litres: number;
+  currentStageIndex: number;
+}
+
+export interface AlcoholSaveResult {
+  success: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AlcoholsService {
 
-  constructor() { }
+  constructor(private supabase: SupabaseService) { }
 
   //maybe id is string: TODO: confirm
   get(id: number): Observable<AlkoholTimetableViewModel> {
+    // this.supabase.getClient().from("alcohol")
+    // .select()
+    // .match({id: id})
+    // .sin
+
+
     // Beer source: https://birofilia.org/historie/warzenie-piwa-z-zacieraniem.html
     let ret = {
       id: id,
@@ -78,4 +102,38 @@ export class AlcoholsService {
     } as AlkoholTimetableViewModel;
     return of(ret);
   }
+
+  async getEditModel(id: number): Promise<AlcoholAddEditModel> {
+    const { data, error } = await this.supabase.getClient().from<AlcoholAddEditModel>("alcohol").select().match({ id: id }).single();
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  }
+
+  async save(model: AlcoholAddEditModel): Promise<AlcoholSaveResult> {
+    //TODO: refactor that
+
+    if (model.id > 0) {
+      const { error } = await this.supabase.getClient().from("alcohol").update(model).match({ id: model.id });
+
+      return {
+        success: error == null
+      };
+
+    } else {
+      delete model.id;
+      let saveModel = {
+        ...model,
+        currentStageIndex: 0
+      } as AlcoholDbModel;
+
+      const { error } = await this.supabase.getClient().from("alcohol").insert(saveModel);
+      return {
+        success: error == null
+      };
+    }
+  }
+
 }
