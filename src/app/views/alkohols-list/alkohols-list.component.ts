@@ -49,7 +49,7 @@ export class AlkoholsListComponent implements OnInit {
 
             let currentStageDate = dayjs(x.createdAt).add(currentStageFullDays, "day");
             let nextStageDate = currentStageDate.add(nextStage?.days);
-            let nextStageInDays = nextStageDate.diff(new Date(), "days");
+            let nextStageInDays = this._clamp(nextStageDate.diff(new Date(), "days"));
 
             return {
               id: x.id,
