@@ -19,6 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PrimaryLeftArrowButtonComponent } from './ui/primary-left-arrow-button/primary-left-arrow-button.component';
 import { PrimaryRightArrowButtonComponent } from './ui/primary-right-arrow-button/primary-right-arrow-button.component';
 import { HeaderComponent } from './ui/header/header.component';
+import { SidebarItemComponent } from './ui/sidebar/sidebar-item/sidebar-item.component';
 
 //TODO: proper locale detecting
 registerLocaleData(localeUk);
@@ -36,7 +37,8 @@ registerLocaleData(localeUk);
     SlideOverComponent,
     PrimaryLeftArrowButtonComponent,
     PrimaryRightArrowButtonComponent,
-    HeaderComponent
+    HeaderComponent,
+    SidebarItemComponent
   ],
   imports: [
     BrowserModule,

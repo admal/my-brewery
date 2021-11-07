@@ -10,6 +10,7 @@
       New beer
     </button>
   </mb-header>
+
   <div class="mb-4"></div>
   <div class="flex flex-col">
     <div class="overflow-x-auto">
@@ -58,8 +59,10 @@
                   </span> -->
                   <div class="font-bold text-primary text-lg">{{alcohol.currentStageName}}</div>
                   <div class="text-gray-400" *ngIf="alcohol.nextStageName != null">
-                    <span>Next stage: </span> <span class="text-primary-dark">{{alcohol.nextStageName}} </span><span>in
+                    <span>Next stage: </span> <span class="text-primary-dark">Transfer the </span><span>in
                       {{alcohol.nextStageInDays}} days</span>
+                    <!-- <span>Next stage: </span> <span class="text-primary-dark">{{alcohol.nextStageName}} </span><span>in
+                      {{alcohol.nextStageInDays}} days</span> -->
                   </div>
                   <div class="text-gray-400" *ngIf="alcohol.nextStageName == null">
                     <span class="text-primary-dark">Finished</span>
