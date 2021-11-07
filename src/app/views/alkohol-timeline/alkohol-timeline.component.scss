@@ -2,12 +2,19 @@
 .timeline::after {
     content: "";
     position: absolute;
-    width: 6px;
+    width: 3px;
     background-color: #0c0f0aff;
     top: 0;
     bottom: 0;
-    left: 50%;
-    margin-left: -3px;
+    // left: 100%;
+    right: 12px;
+    z-index: 32;
+
+    @media (min-width: 768px) {
+        left: 50%;
+        margin-left: -3px;
+        width: 6px;
+    }
 }
 
 .container::after {
@@ -15,12 +22,16 @@
     position: absolute;
     width: 25px;
     height: 25px;
-    right: -13px;
+    right: 0;
     background-color: white;
     border: 4px solid #ffc457ff;
     top: 15px;
     border-radius: 50%;
-    z-index: 1;
+    z-index: 34;
+
+    @media (min-width: 768px) {
+        right: -13px;
+    }
 }
 
 .done::after {
@@ -31,5 +42,9 @@
 }
 
 .right::after {
-    left: -12px;
+    // left: -12px;
+    
+    @media (min-width: 768px) {
+        left: -12px;
+    }
 }
