@@ -42,7 +42,10 @@
                 <td class="px-2 py-4text-lg font-bold">
                   <div class="flex items-center">
                     <div class="mr-2">{{alcohol.recipeName}}</div>
-                    <mb-primary-right-arrow-button [routerLink]="['/recipe',alcohol.recipeId, 'edit']"></mb-primary-right-arrow-button>
+                    <a class="text-primary hover:text-primary-dark" [routerLink]="['/recipe',alcohol.recipeId, 'edit']">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    
                   </div>
                   <div class="sm:hidden whitespace-nowrap font-normal text-xs text-gray-400">
                     {{alcohol.litres}} litres
@@ -70,10 +73,12 @@
 
                 </td>
                 <td class="whitespace-nowrap">
-                  <!-- px-2 py-4 -->
-                  <div class="h-full text-sm font-medium flex items-center justify-end">
+                  <div class="h-full font-medium flex items-center justify-end">
                     <a [routerLink]="['/beer',alcohol.id, 'edit']"
-                      class="text-primary hover:text-primary-dark mr-2">Edit</a>
+                      class="text-primary hover:text-primary-dark mr-2"> 
+                      <i class="fas fa-edit"></i>
+                    </a>
+                      
                     <mb-primary-right-arrow-button [routerLink]="['/beer',alcohol.id, 'timeline']">
                     </mb-primary-right-arrow-button>
                     <div class="mr-2"></div>
