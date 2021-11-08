@@ -2,3 +2,9 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+//I've tried to use angular version of Awesome Fonts but that library is really bad
+//It forces user to use icons as properties of components, it is easier to use just classes
+@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/brands.scss";
