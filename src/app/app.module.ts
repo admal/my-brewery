@@ -20,6 +20,7 @@ import { PrimaryLeftArrowButtonComponent } from './ui/primary-left-arrow-button/
 import { PrimaryRightArrowButtonComponent } from './ui/primary-right-arrow-button/primary-right-arrow-button.component';
 import { HeaderComponent } from './ui/header/header.component';
 import { SidebarItemComponent } from './ui/sidebar/sidebar-item/sidebar-item.component';
+import { ModalComponent } from './ui/modal/modal.component';
 
 //TODO: proper locale detecting
 registerLocaleData(localeUk);
@@ -38,7 +39,8 @@ registerLocaleData(localeUk);
     PrimaryLeftArrowButtonComponent,
     PrimaryRightArrowButtonComponent,
     HeaderComponent,
-    SidebarItemComponent
+    SidebarItemComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,

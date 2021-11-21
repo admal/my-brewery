@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { RecipeAddEditModel, RecipeSaveResult, RecipiesService } from 'src/app/services/recipies/recipies.service';
+import { ModalService } from 'src/app/ui/modal/modal.service';
 
 @Component({
   selector: 'mb-recipe-add-edit',
@@ -15,6 +16,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
   saveClick$ = new Subject<void>();
   saveResult$: Observable<RecipeSaveResult>;
   setFormValueSubscription: Subscription;
+  $currentStageEdited: Subject<any>;
 
   saving = false; //TODO: make more reactive
 
@@ -22,8 +24,10 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private recipiesService: RecipiesService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private modalService: ModalService
   ) {
+    this.$currentStageEdited = new Subject<any>();
 
     this.recipeForm = this.fb.group({
       id: [""],
@@ -125,7 +129,28 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
     return this.recipeForm.get("id").value == ""; //hack, should be done better
   }
 
+  getRecipeStage(i: number) {
+    return this.stages[i];
+  }
+
   ngOnDestroy(): void {
     this.setFormValueSubscription.unsubscribe();
+  }
+
+  openModal(id: string) {
+    this.modalService.open(id);
+  }
+
+  openStageModal(i: number) {
+    const modalId = "testModal";
+    // console.log("stage", stage);
+    // if (stage == null) {
+    //   stage = this.fb.group({
+    //     name: ["", Validators.required],
+    //     days: [0]
+    //   });
+    // }
+    this.$currentStageEdited.next(i);
+    this.modalService.open(modalId);
   }
 }
