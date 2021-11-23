@@ -23,8 +23,7 @@
             <div formArrayName="ingredients">
                 <div class="flex justify-between">
                     <h2 class="text-xl font-bold">Ingredients*</h2>
-                    <button (click)="addIngredient()" class="text-sm bg-primary text-white py-2 px-4">+Add
-                        ingredient</button>
+                    <button (click)="addIngredient()" class="text-sm bg-primary text-white py-2 px-4">+Add ingredient</button>
                 </div>
                 <label class="block" *ngFor="let ingredient of ingredients.controls; let i=index"
                     for="ingredient-{{i}}">
@@ -39,27 +38,94 @@
                 </label>
             </div>
             <div formArrayName="stages" class="mt-4">
+                <mb-modal id="editStageModal">
+                    <div header>
+                        <div *ngIf="$currentStageEdited | async as currentStageEdited">
+                            <ng-container *ngIf="currentStageEdited.isNew">Add new stage</ng-container>
+                            <ng-container *ngIf="currentStageEdited.isNew == false">Edit existing stage</ng-container>
+                        </div>
+                    </div>
+                    <div content>
+                        <div *ngIf="$currentStageEdited | async as currentStageEdited">
+                            <div [formGroup]="currentStageEdited.stage" class="w-full grid grid-cols-1 gap-6">
+                                <!-- TODO: add previous stage in here -->
+                                <label class="block">
+                                    <span class="text-gray-700">Days after previous phase*</span>
+                                    <input 
+                                        type="number" 
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                        formControlName="days">
+                                </label>
+                                <label class="block">
+                                    <span class="text-gray-700">Phase name*</span>
+                                <input 
+                                    type="text"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                    placeholder="Stage name*"
+                                    formControlName="name">
+                                </label>
+                                
+                                <label class="block">
+                                    <span class="text-gray-700">Description (optional)</span>
+                                    <textarea formControlName="description"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" 
+                                        rows="3">
+                                    </textarea>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div footer>                        
+                        <button type="button" (click)="cancelCurrentStage()"
+                            class="text-white bg-red py-2 px-4">
+                            Cancel
+                        </button>                        
+                        <button type="button" (click)="saveCurrentStage()"
+                            class="text-white bg-primary py-2 px-4">
+                            +Add stage
+                        </button>
+                    </div> 
+                </mb-modal>
+
                 <div class="flex justify-between">
                     <h2 class="text-xl font-bold">Recipe stages*</h2>
-                    <button class="text-sm bg-primary text-white py-2 px-4" (click)="addStage()">+Add stage</button>
+                    <button class="text-sm bg-primary text-white py-2 px-4" (click)="openStageModal()">+Add stage</button>
                 </div>
                 <p class="mb-4 text-gray-400">
                     Define each stage needed to prepare a new beer. Stages can be in the same day or later.
                 </p>
+
+                <table class="w-full table-auto border-collapse">
+                    <tbody>
+                        <tr class="border-b" *ngFor="let stage of stages.controls; let i=index">
+                            <td class="w-1 whitespace-nowrap">+{{stage.value.days}} days</td>
+                            <td><p class="ml-2">{{stage.value.name}}</p></td>
+                            <td class="w-1 whitespace-nowrap ">
+                                <div class="flex items-center justify-end">
+                                    <button class="text-primary text-2xl" (click)="openStageModal(i)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button (click)="removeStage(i)" class="mt-2 ml-1 text-white bg-red py-1 px-3 rounded mb-2">-</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
                 <label class="block" *ngFor="let stage of stages.controls; let i=index" for="stage-{{i}}">
                     <!-- <span class="text-gray-700">Description</span> -->
                     <div [formGroupName]="i" class="flex items-center">
-                        <p class="mr-1">+</p>
+                        <!-- <p class="mr-1">+</p>
                         <input type="number" id="stage-days-{{i}}"
                             class="mt-1 mr-1 w-16 block rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             formControlName="days">
                         <p class="mr-4">days</p>
                         <input type="text" id="stage-name-{{i}}"
                             class="mt-1 block w-3/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            placeholder="Stage name*" formControlName="name">
+                            placeholder="Stage name*" formControlName="name"> -->
 
-                        <button (click)="removeStage(i)"
-                            class="mt-1 ml-1 text-white bg-red py-2 px-3 rounded">-</button>
+                        <!-- <button (click)="removeStage(i)"
+                            class="mt-1 ml-1 text-white bg-red py-2 px-3 rounded">-</button> -->
                     </div>
                 </label>
             </div>

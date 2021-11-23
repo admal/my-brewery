@@ -16,6 +16,7 @@ export interface RecipeAddEditModel {
 export interface RecipeStage {
   name: string;
   days: number;
+  description: string;
 }
 
 export interface RecipeSaveResult {
