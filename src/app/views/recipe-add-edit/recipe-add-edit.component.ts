@@ -85,7 +85,8 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
             for (const stage of x.stages) {
               this.stages.push(this.fb.group({
                 name: [stage.name, Validators.required],
-                days: [stage.days]
+                days: [stage.days, Validators.required],
+                description: [stage.description]
               }));
             }
           })
