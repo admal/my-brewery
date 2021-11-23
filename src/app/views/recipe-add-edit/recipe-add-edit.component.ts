@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { RecipeAddEditModel, RecipeSaveResult, RecipiesService } from 'src/app/services/recipies/recipies.service';
 import { ModalService } from 'src/app/ui/modal/modal.service';
@@ -16,7 +16,9 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
   saveClick$ = new Subject<void>();
   saveResult$: Observable<RecipeSaveResult>;
   setFormValueSubscription: Subscription;
-  $currentStageEdited: Subject<any>;
+  $currentStageEdited: BehaviorSubject<any>;
+
+  editStageModalId = "editStageModal";
 
   saving = false; //TODO: make more reactive
 
@@ -27,7 +29,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private modalService: ModalService
   ) {
-    this.$currentStageEdited = new Subject<any>();
+    this.$currentStageEdited = new BehaviorSubject<any>(null);
 
     this.recipeForm = this.fb.group({
       id: [""],
@@ -36,11 +38,13 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
       stages: this.fb.array([
         this.fb.group({
           name: ["Prepare ingredients", Validators.required],
-          days: [0, Validators.required]
+          days: [0, Validators.required],
+          description: [""]
         }),
         this.fb.group({
           name: ["It is ready!", Validators.required],
-          days: [14, Validators.required]
+          days: [14, Validators.required],
+          description: [""]
         })
       ], [Validators.required]),
       ingredients: this.fb.array([
@@ -141,16 +145,49 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
     this.modalService.open(id);
   }
 
-  openStageModal(i: number) {
-    const modalId = "testModal";
-    // console.log("stage", stage);
-    // if (stage == null) {
-    //   stage = this.fb.group({
-    //     name: ["", Validators.required],
-    //     days: [0]
-    //   });
-    // }
-    this.$currentStageEdited.next(i);
-    this.modalService.open(modalId);
+  openStageModal(stageIdx: number = null) {
+    let isNew = stageIdx == null;
+
+    if (stageIdx == null) {
+      this.stages.push(
+        this.fb.group({
+          name: ["", Validators.required],
+          days: [0],
+          description: [""]
+        }));
+      stageIdx = this.stages.length - 1;
+    }
+
+    let stage = this.stages.controls[stageIdx];
+    this.$currentStageEdited.next({
+      stageIdx: stageIdx,
+      stage: stage,
+      isNew: isNew,
+      previousValue: this.stages.controls[stageIdx].value
+    });
+    this.modalService.open(this.editStageModalId);
+  }
+
+  saveCurrentStage() {
+    this.modalService.close(this.editStageModalId);
+    this.$currentStageEdited.next(null);
+  }
+
+  cancelCurrentStage() {
+    let currentEditedStage = this.$currentStageEdited.value;
+
+    if (currentEditedStage.isNew) {
+      //new stage && cancel modal, just remove it
+      this.stages.controls.splice(currentEditedStage.stageIdx, 1);
+    } else {
+      //existing stage && cancel modal, reset value to the old one
+      console.log("currentEditedStage", currentEditedStage);
+      this.stages.controls[currentEditedStage.stageIdx].setValue(currentEditedStage.previousValue);
+    }
+
+    this.$currentStageEdited.next(null);
+    this.modalService.close(this.editStageModalId);
   }
 }
+
+

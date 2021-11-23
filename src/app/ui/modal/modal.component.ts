@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ModalService } from './modal.service';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'mb-modal',
@@ -10,6 +11,7 @@ export class ModalComponent implements OnInit, OnDestroy {
   isShown = false;
 
   @Input() id: string;
+  @Output() onClosed = new EventEmitter<void>();  
 
   constructor(private modalService: ModalService) { }
 
@@ -31,5 +33,6 @@ export class ModalComponent implements OnInit, OnDestroy {
 
   close() {
     this.isShown = false;
+    this.onClosed.emit();
   }
 }
