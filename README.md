@@ -21,8 +21,8 @@ Are you done with keeping Word documents or with losing your printed papers with
 The app was developed using Angular and Supabase (supabase database). In the future Supabase will be the chosen technology for API with storage and authentication.
 
 ## Planned features
-- proper mobile version
-- accounts - authorization and authentication
-- more alcohol types - beer was chosen to be the main theme of the application because that is the theme of Hacktoberfest but we are primarily making wines and spirits and we want to use My Brewery for all of our productions
-- notifications - calendar, email, sms notifications to notify whether you need to take action
-- better recipes - more complex ingredients and recipe stages
+- [x] proper mobile version
+- [ ] accounts - authorization and authentication
+- [ ] more alcohol types - beer was chosen to be the main theme of the application because that is the theme of Hacktoberfest but we are primarily making wines and spirits and we want to use My Brewery for all of our productions
+- [ ] notifications - calendar, email, sms notifications to notify whether you need to take action
+- [ ] better recipes - more complex ingredients and recipe stages
