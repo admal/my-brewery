@@ -25,13 +25,25 @@ export class AlkoholAddEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private recipiesService: RecipiesService,
     private alcoholsService: AlcoholsService
-  ) { }
+  ) {
+    this.alcoholForm = this.fb.group(
+      {
+        id: [""],
+        recipeId: [null, Validators.required],
+        litres: [0, [Validators.required, Validators.min(0)]]
+      }
+    );
+  }
 
   ngOnInit(): void {
-    this.recipies$ = from(this.recipiesService.getSimple()).pipe(tap(x => console.log("x", x)));
+    this.recipies$ = from(this.recipiesService.getSimple());
 
     this.saveResult$ = this.saveClick$.pipe(
-      tap(_ => console.log("valid", this.alcoholForm.valid)),
+      tap(_ => {
+        if (this.alcoholForm.invalid) {
+          this.alcoholForm.markAllAsTouched();
+        }
+      }),
       filter(x => this.alcoholForm.valid),
       map(_ => this.alcoholForm.value as AlcoholAddEditModel),
       tap(_ => this.saving = true),
@@ -54,14 +66,14 @@ export class AlkoholAddEditComponent implements OnInit, OnDestroy {
         })
       )
         .subscribe();
+  }
 
-    this.alcoholForm = this.fb.group(
-      {
-        id: [""],
-        recipeId: [0, Validators.required],
-        litres: [0, Validators.required]
-      }
-    )
+  get litres() {
+    return this.alcoholForm.get("litres");
+  }
+
+  get recipeId() {
+    return this.alcoholForm.get("recipeId");
   }
 
   get isNew() {
@@ -69,11 +81,6 @@ export class AlkoholAddEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    //TODO: refactor
-    if (this.alcoholForm.invalid) {
-      alert("Please fill all required fields.")
-    }
-
     this.saveClick$.next();
   }
 
