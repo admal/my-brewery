@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
@@ -16,7 +16,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
   saveClick$ = new Subject<void>();
   saveResult$: Observable<RecipeSaveResult>;
   setFormValueSubscription: Subscription;
-  $currentStageEdited: BehaviorSubject<any>;
+  $currentStageEdited: BehaviorSubject<CurrentStageData>;
 
   editStageModalId = "editStageModal";
 
@@ -29,12 +29,12 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private modalService: ModalService
   ) {
-    this.$currentStageEdited = new BehaviorSubject<any>(null);
+    this.$currentStageEdited = new BehaviorSubject<CurrentStageData>(null);
 
     this.recipeForm = this.fb.group({
       id: [""],
       name: ["", Validators.required],
-      litres: ["", Validators.required],
+      litres: ["", [Validators.required, Validators.min(0)]],
       stages: this.fb.array([
         this.fb.group({
           name: ["Prepare ingredients", Validators.required],
@@ -57,6 +57,11 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
 
     this.saveResult$ = this.saveClick$.pipe(
       tap(_ => console.log("valid", this.recipeForm.valid)),
+      tap(_ => {
+        if (this.recipeForm.invalid) {
+          this.recipeForm.markAllAsTouched();
+        }
+      }),
       filter(x => this.recipeForm.valid),
       map(_ => this.recipeForm.value as RecipeAddEditModel),
       tap(_ => this.saving = true),
@@ -94,6 +99,14 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
         .subscribe();
   }
 
+  get recipeName() {
+    return this.recipeForm.get("name");
+  }
+
+  get litres() {
+    return this.recipeForm.get("litres");
+  }
+
   get ingredients(): FormArray {
     return this.recipeForm.get("ingredients") as FormArray;
   }
@@ -123,10 +136,6 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    //TODO: refactor
-    if (this.recipeForm.invalid) {
-      alert("Please fill all required fields.")
-    }
     this.saveClick$.next();
   }
 
@@ -153,7 +162,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
       this.stages.push(
         this.fb.group({
           name: ["", Validators.required],
-          days: [0],
+          days: [0, [Validators.required, Validators.min(0)]],
           description: [""]
         }));
       stageIdx = this.stages.length - 1;
@@ -169,7 +178,22 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
     this.modalService.open(this.editStageModalId);
   }
 
+  get currentStageDays() {
+    return this.$currentStageEdited.value.stage.get("days");
+  }
+
+  get currentStageName() {
+    return this.$currentStageEdited.value.stage.get("name");
+  }
+
   saveCurrentStage() {
+    let currentEditedStage = this.$currentStageEdited.value;
+
+    if (currentEditedStage.stage.valid == false) {
+      currentEditedStage.stage.markAllAsTouched();
+      return;
+    }
+
     this.modalService.close(this.editStageModalId);
     this.$currentStageEdited.next(null);
   }
@@ -191,4 +215,9 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
   }
 }
 
-
+interface CurrentStageData {
+  stageIdx: number;
+      stage: AbstractControl;
+      isNew: boolean;
+      previousValue: any;
+}

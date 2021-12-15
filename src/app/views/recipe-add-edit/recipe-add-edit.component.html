@@ -12,12 +12,18 @@
                 <input type="text" formControlName="name"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     placeholder="">
+                <span class="text-red text-xs" *ngIf="recipeName.touched && recipeName.errors?.required">The field is required</span>
             </label>
             <label class="block">
                 <span class="text-gray-700">Litres of beer*</span>
                 <input type="number" formControlName="litres"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     placeholder="">
+                    <!-- TODO: think of better way to handle validation -->
+                <ng-container *ngIf="litres.touched && litres.valid == false">
+                    <span class="text-red text-xs" *ngIf="litres.errors?.required">The field is required</span>
+                    <span class="text-red text-xs" *ngIf="litres.errors?.min">Number of litres must be greater than 0</span>
+                </ng-container>
             </label>
 
             <div formArrayName="ingredients">
@@ -37,6 +43,7 @@
                     </div>
                 </label>
             </div>
+            <div class="text-red" *ngIf="ingredients.errors?.required">There must be at least one ingredient</div>
             <div formArrayName="stages" class="mt-4">
                 <mb-modal id="editStageModal">
                     <div header>
@@ -55,14 +62,19 @@
                                         type="number" 
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                         formControlName="days">
+                                        <ng-container *ngIf="currentStageDays.touched && currentStageDays.valid == false">
+                                            <span class="text-red text-xs" *ngIf="currentStageDays.errors?.required">The field is required</span>
+                                            <span class="text-red text-xs" *ngIf="currentStageDays.errors?.min">Number of days must be greater than 0</span>
+                                        </ng-container>
                                 </label>
                                 <label class="block">
                                     <span class="text-gray-700">Phase name*</span>
-                                <input 
-                                    type="text"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                    placeholder="Stage name*"
-                                    formControlName="name">
+                                    <input 
+                                        type="text"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                        placeholder="Stage name*"
+                                        formControlName="name">
+                                        <span class="text-red text-xs" *ngIf="currentStageName.touched && currentStageName.valid == false && currentStageName.errors?.required">The field is required</span>
                                 </label>
                                 
                                 <label class="block">
@@ -113,22 +125,12 @@
                 </table>
 
                 <label class="block" *ngFor="let stage of stages.controls; let i=index" for="stage-{{i}}">
-                    <!-- <span class="text-gray-700">Description</span> -->
                     <div [formGroupName]="i" class="flex items-center">
-                        <!-- <p class="mr-1">+</p>
-                        <input type="number" id="stage-days-{{i}}"
-                            class="mt-1 mr-1 w-16 block rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            formControlName="days">
-                        <p class="mr-4">days</p>
-                        <input type="text" id="stage-name-{{i}}"
-                            class="mt-1 block w-3/4 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            placeholder="Stage name*" formControlName="name"> -->
-
-                        <!-- <button (click)="removeStage(i)"
-                            class="mt-1 ml-1 text-white bg-red py-2 px-3 rounded">-</button> -->
                     </div>
                 </label>
             </div>
+            <div class="text-red" *ngIf="stages.errors?.required">There must be at least one recipe stage</div>
+
             <button class="mt-4 text-lg font-bold  text-white py-2 px-4" (click)="save()"
                 [ngClass]="{'bg-gray-800': saving, 'bg-primary': !saving}" [disabled]="saving">Save recipe</button>
         </div>
