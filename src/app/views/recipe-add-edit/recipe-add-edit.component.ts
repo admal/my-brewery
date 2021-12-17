@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { RecipeAddEditModel, RecipeSaveResult, RecipiesService } from 'src/app/services/recipies/recipies.service';
+import { AlertService } from 'src/app/ui/alert/alert.service';
 import { ModalService } from 'src/app/ui/modal/modal.service';
 
 @Component({
@@ -27,7 +28,8 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
     private recipiesService: RecipiesService,
     private router: Router,
     private route: ActivatedRoute,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private alertService: AlertService
   ) {
     this.$currentStageEdited = new BehaviorSubject<CurrentStageData>(null);
 
@@ -67,6 +69,7 @@ export class RecipeAddEditComponent implements OnInit, OnDestroy {
       tap(_ => this.saving = true),
       switchMap(x => this.recipiesService.save(x)),
       tap(_ => this.saving = false),
+      tap(_ => this.alertService.success("Recipe has been saved successfully!")),
       tap(_ => this.router.navigate(["/recipies"]))
     );
 

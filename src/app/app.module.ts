@@ -21,6 +21,7 @@ import { PrimaryRightArrowButtonComponent } from './ui/primary-right-arrow-butto
 import { HeaderComponent } from './ui/header/header.component';
 import { SidebarItemComponent } from './ui/sidebar/sidebar-item/sidebar-item.component';
 import { ModalComponent } from './ui/modal/modal.component';
+import { AlertComponent } from './ui/alert/alert.component';
 
 //TODO: proper locale detecting
 registerLocaleData(localeUk);
@@ -40,7 +41,8 @@ registerLocaleData(localeUk);
     PrimaryRightArrowButtonComponent,
     HeaderComponent,
     SidebarItemComponent,
-    ModalComponent
+    ModalComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
