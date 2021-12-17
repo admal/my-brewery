@@ -5,6 +5,7 @@ import { from, Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AlcoholAddEditModel, AlcoholSaveResult, AlcoholsService } from 'src/app/services/alcohols/alcohols.service';
 import { RecipieSimpleModel, RecipiesService } from 'src/app/services/recipies/recipies.service';
+import { AlertService } from 'src/app/ui/alert/alert.service';
 
 @Component({
   selector: 'mb-alkohol-add-edit',
@@ -24,7 +25,8 @@ export class AlkoholAddEditComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private recipiesService: RecipiesService,
-    private alcoholsService: AlcoholsService
+    private alcoholsService: AlcoholsService,
+    private alertService: AlertService
   ) {
     this.alcoholForm = this.fb.group(
       {
@@ -49,6 +51,7 @@ export class AlkoholAddEditComponent implements OnInit, OnDestroy {
       tap(_ => this.saving = true),
       switchMap(x => this.alcoholsService.save(x)),
       tap(_ => this.saving = false),
+      tap(_ => this.alertService.success("Beer has been saved successfully!")),
       tap(_ => this.router.navigate(["/beer"]))
     );
 
