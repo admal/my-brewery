@@ -124,7 +124,6 @@ export class AlcoholsService {
           stages
         )
     `);
-    console.log("data", data);
 
     return data;
   }

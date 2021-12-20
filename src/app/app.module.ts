@@ -22,6 +22,11 @@ import { HeaderComponent } from './ui/header/header.component';
 import { SidebarItemComponent } from './ui/sidebar/sidebar-item/sidebar-item.component';
 import { ModalComponent } from './ui/modal/modal.component';
 import { AlertComponent } from './ui/alert/alert.component';
+import { LoginButtonComponent } from './ui/login-button/login-button.component';
+import { AppLayoutComponent } from './_layouts/app-layout/app-layout.component';
+import { RegisterComponent } from './views/register/register.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpErrorInterceptor } from './interceptors/http-error-interceptor.interceptor';
 
 //TODO: proper locale detecting
 registerLocaleData(localeUk);
@@ -42,7 +47,10 @@ registerLocaleData(localeUk);
     HeaderComponent,
     SidebarItemComponent,
     ModalComponent,
-    AlertComponent
+    AlertComponent,
+    LoginButtonComponent,
+    AppLayoutComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +58,12 @@ registerLocaleData(localeUk);
     ReactiveFormsModule
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'en-GB' }
+    { provide: LOCALE_ID, useValue: 'en-GB' },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

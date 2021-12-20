@@ -1,1 +1,13 @@
-<p>login works!</p>
+<div class="flex h-screen">
+    <div class="w-96 mx-auto flex flex-col bg-black p-4 rounded-lg text-white m-auto shadow-2xl">
+        <img src="../../../assets/logo-rect.png" alt="My Brewery logo">
+        <h1 class="mb-4 mt-2 text-xl text-center font-semibold">Start creating your own beverages right now!</h1>
+        <mb-login-button (click)="loginGoogle()">
+            <i class="fab fa-google"></i>&nbsp;Sign in with Google
+        </mb-login-button>
+        
+        <div class="mt-4 py-2"></div>
+        <!-- <a routerLink="/register" class="text-sm text-center mt-4 py-2">Don't have an account? Create a free account!</a> -->
+    </div>
+
+</div>
