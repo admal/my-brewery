@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { SupabaseClient } from '@supabase/supabase-js';
-import { from, observable, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { SupabaseService } from '../supabase/supabase.service';
 
 
@@ -36,8 +33,6 @@ export class RecipiesService {
   constructor(private supabase: SupabaseService) { }
 
   async save(model: RecipeAddEditModel): Promise<RecipeSaveResult> {
-    console.log("model", model);
-
     //TODO: refactor that
     if (model.id > 0) {
       const { error } = await this.supabase.getClient().from("recipe").update(model).match({ id: model.id });
@@ -54,8 +49,6 @@ export class RecipiesService {
   }
 
   async getAddEditModel(id: number): Promise<RecipeAddEditModel> {
-    console.log("id", id);
-
     const { data, error } = await this.supabase.getClient().from<RecipeAddEditModel>("recipe").select().match({ id: id }).single();
     if (error) {
       throw error;
@@ -81,8 +74,7 @@ export class RecipiesService {
 
   async getAll(): Promise<RecipeAddEditModel[]> {
     const { data, error } = await this.supabase.getClient()
-    .from<RecipeAddEditModel>("recipe");
-    console.log("data", data)
+      .from<RecipeAddEditModel>("recipe");
 
     return data;
   }
