@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 
 @Component({
@@ -8,19 +10,29 @@ import { SupabaseService } from 'src/app/services/supabase/supabase.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  loginForm: FormGroup;
 
-  constructor(private supabase: SupabaseService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router) { }
 
   ngOnInit(): void {
-    console.log("this.supabase.isAuthenticated", this.supabase.isAuthenticated);
-    setTimeout(() => {
-      if (this.supabase.isAuthenticated) {
-        this.router.navigate(["beer"]);
-      }      
-    }, 500);//HACK! Big hack to find out whether user is logged in. It must be fixed later.
+    this.loginForm = this.fb.group({
+      email: ["", [Validators.required, Validators.email]],
+      password: ["", [Validators.required]]
+    });
+  }
+
+  get email() {
+    return this.loginForm.get("email");
+  }
+
+  get password() {
+    return this.loginForm.get("password");
   }
 
   loginGoogle() {
-    this.supabase.signIn();
+    this.auth.login(this.loginForm.value).then(x => this.router.navigate(["beer"]));
   }
 }

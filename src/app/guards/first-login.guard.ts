@@ -6,20 +6,20 @@ import { AuthService } from '../services/auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardGuard implements CanActivate {
+export class FirstLoginGuard implements CanActivate {
   constructor(
-    private auth: AuthService, 
+    private auth: AuthService,
     public router: Router) { }
-  
-  canActivate(
+    
+  async canActivate(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (!this.auth.isAuthenticated) {
-      this.router.navigate(["login"]);
-      return false;
+    state: RouterStateSnapshot):Promise<boolean> {
+    let profileExists = this.auth.isAuthenticated && await this.auth.profileExists();
+    
+    if (profileExists) {
+      return true;
     }
 
-    return true;
-  }
-
+    this.router.navigate(["profile/new"])
+  }  
 }

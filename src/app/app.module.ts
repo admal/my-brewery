@@ -27,6 +27,7 @@ import { AppLayoutComponent } from './_layouts/app-layout/app-layout.component';
 import { RegisterComponent } from './views/register/register.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './interceptors/http-error-interceptor.interceptor';
+import { ProfileFirstLoginComponent } from './views/profile-first-login/profile-first-login.component';
 
 //TODO: proper locale detecting
 registerLocaleData(localeUk);
@@ -50,7 +51,8 @@ registerLocaleData(localeUk);
     AlertComponent,
     LoginButtonComponent,
     AppLayoutComponent,
-    RegisterComponent
+    RegisterComponent,
+    ProfileFirstLoginComponent
   ],
   imports: [
     BrowserModule,

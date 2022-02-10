@@ -20,6 +20,7 @@ export interface AlcoholRecipeData {
 export interface AlcoholRecipeStageData {
   name: string;
   days: number;
+  description: string;
 }
 export interface AlcoholAddEditModel {
   id: number;

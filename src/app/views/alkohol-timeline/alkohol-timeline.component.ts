@@ -70,10 +70,10 @@ export class AlkoholTimelineComponent implements OnInit {
                 day: stageDay,
                 name: stage.name,
                 done: idx <= data.currentStageIndex,
-                description: "TODO"
+                description: stage.description
               }
             });
-
+            console.log("stages", stages);
             let alcohol = {
               id: data.id,
               createdDate: data.createdAt,

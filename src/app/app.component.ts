@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SupabaseService } from './services/supabase/supabase.service';
+import { AuthService } from './services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -7,8 +7,8 @@ import { SupabaseService } from './services/supabase/supabase.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private supabase: SupabaseService) {
-    console.log("user", supabase.session?.user?.email);
+  constructor(private auth: AuthService) {
+    console.log("user", auth.session?.user?.email);
   }
-  title = 'my-brewery-frontend';
+  title = 'My Brewery';
 }

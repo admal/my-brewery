@@ -48,6 +48,8 @@ export class AlcoholTimelineData {
       groupedStage.stages.push(stage);
       i++;
     } while (i < data.stages.length);
+
+    console.log("groupedStages", this.groupedStages);
   }
 
   id: number;
