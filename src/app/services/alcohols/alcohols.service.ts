@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 import { SupabaseService } from '../supabase/supabase.service';
 
 
@@ -44,7 +45,10 @@ export interface AlcoholSaveResult {
 })
 export class AlcoholsService {
 
-  constructor(private supabase: SupabaseService) { }
+  constructor(
+    private supabase: SupabaseService,
+    private auth: AuthService
+  ) { }
 
   async get(id: number): Promise<AlcoholData> {
     const { data, error } = await this.supabase.getClient()
@@ -59,7 +63,7 @@ export class AlcoholsService {
           stages
         )
       `)
-      .match({ id: id })
+      .match({ id: id, profileId: this.auth.user.id })
       .single();
 
     return data;
@@ -69,7 +73,7 @@ export class AlcoholsService {
     const { error } = await this.supabase.getClient()
       .from("alcohol")
       .update({ currentStageIndex: stageIndex })
-      .match({ id: id });
+      .match({ id: id, profileId: this.auth.user.id });
 
       if (error) {
         throw error;
@@ -79,7 +83,11 @@ export class AlcoholsService {
   }
 
   async getEditModel(id: number): Promise<AlcoholAddEditModel> {
-    const { data, error } = await this.supabase.getClient().from<AlcoholAddEditModel>("alcohol").select().match({ id: id }).single();
+    const { data, error } = await this.supabase.getClient()
+      .from<AlcoholAddEditModel>("alcohol")
+      .select()
+      .match({ id: id, profileId: this.auth.user.id  })
+      .single();
     if (error) {
       throw error;
     }
@@ -91,7 +99,10 @@ export class AlcoholsService {
     //TODO: refactor that
 
     if (model.id > 0) {
-      const { error } = await this.supabase.getClient().from("alcohol").update(model).match({ id: model.id });
+      const { error } = await this.supabase.getClient()
+        .from("alcohol")
+        .update(model)
+        .match({ id: model.id, profileId: this.auth.user.id  });
 
       return {
         success: error == null
@@ -100,8 +111,9 @@ export class AlcoholsService {
     } else {
       delete model.id;
       let saveModel = {
-        ...model,
-        currentStageIndex: -1
+        profileId: this.auth.user.id,
+        currentStageIndex: -1,
+        ...model
       } as AlcoholDbModel;
 
       const { error } = await this.supabase.getClient().from("alcohol").insert(saveModel);
@@ -113,7 +125,7 @@ export class AlcoholsService {
 
   async getAll(): Promise<AlcoholData[]> {
     const { data, error } = await this.supabase.getClient()
-      .from<AlcoholData>("alcohol")
+      .from("alcohol")
       .select(`
         id,
         litres,
@@ -124,7 +136,8 @@ export class AlcoholsService {
           name,
           stages
         )
-    `);
+    `)
+    .eq("profileId", this.auth.user.id);
 
     return data;
   }

@@ -106,6 +106,7 @@ export class AuthService {
   }
 
   logOut() {
+    this._profileExistsCache = null;
     return this.supabase.getClient().auth.signOut();
   }
 }

@@ -25,6 +25,11 @@ export class ProfileFirstLoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    
+    this.auth.profileExists().then(_ => {
+      this.router.navigate(["beer"]);
+    });
+
     this.email = this.auth.user.email;
 
     this.newUserForm = this.fb.group({
