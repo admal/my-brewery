@@ -40,12 +40,14 @@
               <tr *ngFor="let alcohol of alcohols">
                 <!-- <td></td> -->
                 <td class="px-2 py-4text-lg font-bold">
-                  <div class="flex items-center">
-                    <div class="mr-2">{{alcohol.recipeName}}</div>
-                    <a class="text-primary hover:text-primary-dark" [routerLink]="['/recipe',alcohol.recipeId, 'edit']">
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    
+                  <div class="flex flex-col">
+                    <div class="flex items-center">
+                        <div class="mr-2">{{alcohol.recipeName}}</div>
+                        <a class="text-primary hover:text-primary-dark" [routerLink]="['/recipe',alcohol.recipeId, 'edit']">
+                          <i class="fas fa-edit"></i>
+                        </a>                      
+                    </div>
+                    <div class="font-normal text-xs text-gray-400">{{alcohol.createdDate | date : "mediumDate"}}</div>
                   </div>
                   <div class="sm:hidden whitespace-nowrap font-normal text-xs text-gray-400">
                     {{alcohol.litres}} litres
@@ -62,10 +64,8 @@
                   </span> -->
                   <div class="font-bold text-primary text-lg">{{alcohol.currentStageName}}</div>
                   <div class="text-gray-400" *ngIf="alcohol.nextStageName != null">
-                    <span>Next stage: </span> <span class="text-primary-dark">Transfer the </span><span>in
+                    <span>Next stage: </span> <span class="text-primary-dark">{{alcohol.nextStageName}} </span><span>in
                       {{alcohol.nextStageInDays}} days</span>
-                    <!-- <span>Next stage: </span> <span class="text-primary-dark">{{alcohol.nextStageName}} </span><span>in
-                      {{alcohol.nextStageInDays}} days</span> -->
                   </div>
                   <div class="text-gray-400" *ngIf="alcohol.nextStageName == null">
                     <span class="text-primary-dark">Finished</span>

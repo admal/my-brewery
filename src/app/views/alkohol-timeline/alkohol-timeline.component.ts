@@ -1,11 +1,11 @@
-import { AfterContentInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlcoholsService } from 'src/app/services/alcohols/alcohols.service';
 import { map, switchMap, tap } from "rxjs/operators";
 import { Observable, Subject } from 'rxjs';
 import * as dayjs from 'dayjs';
-import { SlideOverDataContent, SlideOverService } from 'src/app/ui/slide-over.service';
-import { AlcoholGroupedStageByDate, AlcoholTimelineData, AlkoholTimetableViewModel, RecipeStage } from './models';
+import { SlideOverService } from 'src/app/ui/slide-over.service';
+import { AlcoholTimelineData, AlcoholStage } from './models';
 
 @Component({
   selector: 'mb-alkohol-timeline',
@@ -57,7 +57,7 @@ export class AlkoholTimelineComponent implements OnInit {
             this.nowLinePosition = `${percentage}%`;
           }),
           map(data => {
-            let stages: RecipeStage[] = [];
+            let stages: AlcoholStage[] = [];
 
             stages = data.recipe.stages.map((stage, idx) => {
               let stageDay = 0;
@@ -66,6 +66,7 @@ export class AlkoholTimelineComponent implements OnInit {
               }
 
               return {
+                index: idx,
                 date: dayjs(data.createdAt).add(stage.days, "day").toDate(),
                 day: stageDay,
                 name: stage.name,
@@ -76,10 +77,10 @@ export class AlkoholTimelineComponent implements OnInit {
             console.log("stages", stages);
             let alcohol = {
               id: data.id,
-              createdDate: data.createdAt,
+              createdDate: dayjs(data.createdAt),
               recipeName: data.recipe.name,
               stages: stages
-            } as AlkoholTimetableViewModel;
+            } as AlcoholTimelineData;
 
             return alcohol;
           }),
@@ -99,40 +100,37 @@ export class AlkoholTimelineComponent implements OnInit {
             console.log("nowFromStartDiff", nowFromStartDiff);
 
             // this.nowLinePosition = `${nowFromStartDiff / durationInDays * 100}%`;//TODO: fix
-          }),
-          map(x => new AlcoholTimelineData(x))
+          })
         );
 
     setTimeout(_ => this.alcoholRefresh$.next()); //TEMPORARY HACK, TODO: MAKE IT PROPERLY
   }
 
-  openDetails(name: string, groupedStage: AlcoholGroupedStageByDate) {
-    let contents = groupedStage.stages.map(x => {
-      return {
-        header: x.name,
-        content: x.description
-      } as SlideOverDataContent
-    });
-
+  openDetails(recipeName: string, stage: AlcoholStage) {
+    let convertedDate = dayjs(stage.date).format("DD/MM/YYYY"); //TODO: add proper date format
+    let contents = [
+      {
+        header: `${stage.name} (${convertedDate})`,
+        content: stage.description ? stage.description : "No description was provided"
+      }
+    ];
     this.slideOverService.popSlideOver({
-      title: name,
+      title: recipeName,
       contents: contents
     });
   }
 
-  toggleDoneGroupedStage(alcoholId: number, groupedStage: AlcoholGroupedStageByDate) {
-    // groupedStage.done = !groupedStage.done;
-    // for (const stage of groupedStage.stages) {
-    //   stage.done = groupedStage.done;
-    // }
-    if (groupedStage.done) {
+  toggleDoneGroupedStage(alcoholId: number, stage: AlcoholStage) {
+    if (stage.done) {
+      //mark as undone
       this.alcoholsService
-        .markStageDone(alcoholId, groupedStage.lastStageIndex - groupedStage.stages.length)
-        .then(_ => this.alcoholRefresh$.next());
+        .markStageDone(alcoholId, stage.index - 1)
+        .then(_ => this.alcoholRefresh$.next());      
     } else {
+      //mark as done
       this.alcoholsService
-        .markStageDone(alcoholId, groupedStage.lastStageIndex)
-        .then(_ => this.alcoholRefresh$.next());
+      .markStageDone(alcoholId, stage.index)
+      .then(_ => this.alcoholRefresh$.next());    
     }
   }
 }

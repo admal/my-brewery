@@ -48,7 +48,7 @@ export class AlkoholsListComponent implements OnInit {
             }
 
             let currentStageDate = dayjs(x.createdAt).add(currentStageFullDays, "day");
-            let nextStageDate = currentStageDate.add(nextStage?.days);
+            let nextStageDate = currentStageDate.add(nextStage?.days, "days");
             let nextStageInDays = this._clamp(nextStageDate.diff(new Date(), "days"));
 
             return {
@@ -58,7 +58,8 @@ export class AlkoholsListComponent implements OnInit {
               recipeId: x.recipe.id,
               currentStageName: currentStage.name,
               nextStageName: nextStage != null ? nextStage.name : null,
-              nextStageInDays: nextStage != null ? nextStageInDays : 0
+              nextStageInDays: nextStage != null ? nextStageInDays : 0,
+              createdDate: x.createdAt
             } as AlcoholListModel;
           });
           return alcohols;
